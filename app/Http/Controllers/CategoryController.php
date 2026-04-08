@@ -10,7 +10,8 @@ class CategoryController extends Controller
 {
     protected CategoryService $categoryService;
 
-    public function __construct(CategoryService $categoryService){
+    public function __construct(CategoryService $categoryService)
+    {
         $this->categoryService = $categoryService;
     }
 
@@ -18,12 +19,18 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        try {
-            $category = $this->categoryService->processSave($validated);
-        }catch(\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        $category = $this->categoryService->processSave($validated);
 
         return response()->json($category, 201);
+    }
+
+    public function update(CategoryRequest $request, $id): JsonResponse
+    {
+        $validated = $request->validated();
+        $validated['id'] = $id;
+
+        $category = $this->categoryService->processUpdate($validated);
+
+        return response()->json($category, 200);
     }
 }
