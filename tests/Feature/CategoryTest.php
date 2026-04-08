@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -33,4 +34,45 @@ test('Should store category success', function () {
         'name' => 'any_name',
         'description' => 'any_description',
     ]);
+});
+
+test('Should update category success', function () {
+
+    $category = Category::create([
+        'name' => 'any_name',
+        'description' => 'any_description',
+        'order' => '1',
+    ]);
+
+    $response = $this->putJson("/api/category/{$category->id}/update", [
+        'name' => 'any_name_update',
+        'description' => 'any_description_update',
+    ]);
+
+    $response->assertStatus(200);
+
+    $this->assertDatabaseHas('category', [
+        'id' => $category->id,
+        'name' => 'any_name_update',
+        'description' => 'any_description_update',
+    ]);
+});
+
+test('Should update return 404 when category not found', function () {
+
+    $response = $this->putJson("/api/category/999999/update", [
+        'name' => 'any_name_update',
+        'description' => 'any_description_update',
+    ]);
+
+    $response->assertStatus(404);
+});
+
+test('Should update return 422 when name not send', function () {
+
+    $response = $this->putJson("/api/category/999999/update", [
+        'name' => '',
+    ]);
+
+    $response->assertStatus(422);
 });
