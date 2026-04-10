@@ -76,3 +76,23 @@ test('Should update return 422 when name not send', function () {
 
     $response->assertStatus(422);
 });
+
+test('Should delete category success', function (){
+
+    $category = Category::create([
+        'name' => 'any_name',
+        'description' => 'any_description',
+        'order' => '1',
+    ]);
+
+    $response = $this->deleteJson("/api/category/{$category->id}/delete");
+
+    $response->assertStatus(204);
+});
+
+test('Should delete return 404 when category not found', function () {
+
+    $response = $this->deleteJson("/api/category/99999/delete");
+
+    $response->assertStatus(404);
+});

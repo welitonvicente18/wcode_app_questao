@@ -33,4 +33,11 @@ class CategoryController extends Controller
 
         return response()->json($category, 200);
     }
+
+    public function delete($id): JsonResponse
+    {
+        $this->categoryService->processDelete($id);
+
+        return response()->json(['msg' => 'Success to delete'], 204);
+    }
 }

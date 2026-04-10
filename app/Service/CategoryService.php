@@ -6,7 +6,7 @@ use App\Models\Category;
 
 class CategoryService
 {
-    public function processSave($validated): Category
+    public function processSave(array $validated): Category
     {
         $category = new Category();
         $category->name = $validated['name'];
@@ -17,7 +17,7 @@ class CategoryService
         return $category;
     }
 
-    public function processUpdate($validated): Category
+    public function processUpdate(array $validated): Category
     {
         $category = Category::findOrFail($validated['id']);
         $category->name = $validated['name'];
@@ -25,7 +25,14 @@ class CategoryService
         $category->order = $validated['order'] ?? 1;
 
         $category->update();
-        dump($category);
         return $category;
+    }
+
+    public function processDelete(int $id): bool
+    {
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return true;
     }
 }
